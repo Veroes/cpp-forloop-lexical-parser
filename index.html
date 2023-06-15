@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lexical Analyzer</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <nav id="nav-bar">
+      <h1>C++ For Loop Lexical Analyzer and Parser</h1>
+    </nav>
+    <main id="main-container">
+      <div id="line-numbers"></div>
+      <div id="text-container">
+        <textarea
+          id="text-input"
+          name="text-input"
+          cols="20"
+          rows="15"
+          placeholder="input code..."
+          oninput="updateLineNumbers()"
+        ></textarea>
+        <button id="check-button">Check</button>
+      </div>
+      <section id="text-result">Lorem Ipsum</section>
+    </main>
+    <script src="./textBehavior.js"></script>
+    <script src="./lexical.js"></script>
+  </body>
+</html>
