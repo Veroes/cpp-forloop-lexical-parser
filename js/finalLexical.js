@@ -7,18 +7,20 @@ const lexicalAnalyzer = (terminal) => {
           state = 1;
         } else if (terminal[i] === "s") {
           state = 4;
-        } else if (terminal[i] === "1" || terminal[i] === "i") {
+        } else if (terminal[i] === "i") {
           state = 9;
-        } else if (terminal[i] === "+") {
+        } else if (terminal[i] === "1") {
           state = 10;
-        } else if (terminal[i] === "-") {
+        } else if (terminal[i] === "+") {
           state = 11;
-        } else if (terminal[i] === "<") {
+        } else if (terminal[i] === "-") {
           state = 12;
-        } else if (terminal[i] === ">" || terminal[i] === "=") {
+        } else if (terminal[i] === "<") {
           state = 13;
-        } else if (terminal[i] === "!") {
+        } else if (terminal[i] === ">" || terminal[i] === "=") {
           state = 14;
+        } else if (terminal[i] === "!") {
+          state = 15;
         } else if (
           terminal[i] === "(" ||
           terminal[i] === ")" ||
@@ -32,7 +34,7 @@ const lexicalAnalyzer = (terminal) => {
           terminal[i] === "0" ||
           terminal[i] === ";"
         ) {
-          state = 15;
+          state = 16;
         } else {
           state = -1;
         }
@@ -46,7 +48,7 @@ const lexicalAnalyzer = (terminal) => {
         break;
       case 2:
         if (terminal[i] === "r") {
-          state = 15;
+          state = 16;
         } else if (terminal[i] === "u") {
           state = 3;
         } else {
@@ -55,7 +57,7 @@ const lexicalAnalyzer = (terminal) => {
         break;
       case 3:
         if (terminal[i] === "t") {
-          state = 15;
+          state = 16;
         } else {
           state = -1;
         }
@@ -98,30 +100,41 @@ const lexicalAnalyzer = (terminal) => {
       case 9:
         if (terminal[i] === "n") {
           state = 3;
-        } else if (terminal[i] === "0") {
-          state = 15;
         } else {
           state = -1;
         }
         break;
       case 10:
+        if (terminal[i] === "0") {
+          state = 16;
+        } else {
+          state = -1;
+        }
+        break;
       case 11:
+        if (terminal[i] === "+") {
+          state = 16;
+        } else {
+          state = -1;
+        }
+        break;
       case 12:
+        if (terminal[i] === "-") {
+          state = 16;
+        } else {
+          state = -1;
+        }
+        break;
       case 13:
-        if (
-          terminal[i] === "+" ||
-          terminal[i] === "-" ||
-          terminal[i] === "<" ||
-          terminal[i] === "="
-        ) {
-          state = 15;
+        if (terminal[i] === "<" || terminal[i] === "=") {
+          state = 16;
         } else {
           state = -1;
         }
         break;
       case 14:
         if (terminal[i] === "=") {
-          state = 15;
+          state = 16;
         } else {
           state = -1;
         }
@@ -133,7 +146,8 @@ const lexicalAnalyzer = (terminal) => {
     state === 11 ||
     state === 12 ||
     state === 13 ||
-    state === 15
+    state === 14 ||
+    state === 16
   ) {
     return true;
   }
@@ -154,7 +168,7 @@ const parser = (cppCode) => {
   let topStack = stack.at(-1);
 
   while (topStack != "#" && state != "error") {
-    console.log(stack);
+    console.log(stack, symbol);
     switch (topStack) {
       case "statement":
         if (symbol == "for") {
@@ -190,11 +204,22 @@ const parser = (cppCode) => {
         }
         break;
       case "condition":
+        // i < n
         if (symbol === "i" || symbol === "n" || symbol === "x") {
           stack.pop();
-          stack.push("number");
-          stack.push("comparator");
-          stack.push("variable");
+          if (
+            cppCode[head + 2] == "i" ||
+            cppCode[head + 2] == "n" ||
+            cppCode[head + 2] == "x"
+          ) {
+            stack.push("variable");
+            stack.push("comparator");
+            stack.push("variable");
+          } else {
+            stack.push("number");
+            stack.push("comparator");
+            stack.push("variable");
+          }
         } else {
           state = "error";
         }
@@ -207,7 +232,7 @@ const parser = (cppCode) => {
             stack.push("variable");
           } else {
             stack.push("--");
-            stack.push("variabel");
+            stack.push("variable");
           }
         } else {
           state = "error";
@@ -489,19 +514,35 @@ const parser = (cppCode) => {
 const checkButton = document.getElementById("check-button");
 const CheckOutput = document.getElementById("text-result");
 /*
-for(int i = 0; i < n; i++) {
+for(int i = 0; i < 10; i++) {
+  std::cout<<i;
+}
+
+FOR(int i = 0; i < 10; i++) {
+  std::cout<<i;
+}
+
+for (i; i < n; i++) {
+  std::cout<<x;
+}
+for(int i = 0; i > 0; i--) {
+  std::cout<<i;
+}
+for(i; i > 0; i--) {
   std::cout<<i;
 }
 */
-const regex = /[a-zA-Z_]\w*|<<|::|\+\+|[\(\)\{\}<>=;]|[0-9]+/g;
+const regex = /[a-zA-Z_]\w*|<<|::|\+\+|\-\-|[\\(\)\{\}<>=;]|[0-9]+/g;
 
 checkButton.addEventListener("click", () => {
   let validLexical = true;
   const codeSymbol = document.getElementById("text-input").value;
   const tokens = codeSymbol.match(regex);
 
-  tokens[15] += tokens[16] + tokens[17];
-  tokens.splice(16, 2);
+  const stdIndex = tokens.indexOf("std");
+
+  tokens[stdIndex] += tokens[stdIndex + 1] + tokens[stdIndex + 2];
+  tokens.splice(stdIndex + 1, 2);
   console.log(tokens);
   tokens.forEach((lexical) => {
     if (lexicalAnalyzer(lexical) === false) {
