@@ -14,28 +14,28 @@ Run on local machine:
 
 ## Grammar
 
-<statement> ::= for (<initialization>; <condition>; <increment_decrement>) {<action>}
+[statement] ::= for ([initialization]; [condition]; [increment_decrement]) {[action]}
 
-<initialization> ::= <variable> | int <variable> = <number>
+[initialization] ::= [variable] | int [variable] = [number]
 
-<condition> ::= <variable> <comparator> <number> | <variable> <comparator> <variable>
+[condition] ::= [variable] [comparator] [number] | [variable] [comparator] [variable]
 
-<increment_decrement> ::= <variable>++ | <variable>--
+[increment_decrement] ::= [variable]++ | [variable]--
 
-<action> ::= std::cout << <variable>
+[action] ::= std::cout << [variable]
 
-<variable> ::= i | n | x
+[variable] ::= i | n | x
 
-<number> ::= 0 | 1 | 10
+[number] ::= 0 | 1 | 10
 
-<comparator> ::= == | != | > | >= | < | <=
+[comparator] ::= == | != | > | >= | < | <=
 
-<operator> ::= + | - | \* | / | %
+[operator] ::= + | - | \* | / | %
 
 ## Non-Terminal Symbol
 
-<statement>, <initialization>, <condition>, <increment_decrement>,
-<action>, <variable>, <number>, <comparator>, <operator>
+[statement], [initialization], [condition], [increment_decrement],
+[action], [variable], [number], [comparator], [operator]
 
 ## Terminal Symbol
 
