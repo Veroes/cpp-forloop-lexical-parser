@@ -23,8 +23,8 @@ textArea.addEventListener("keydown", function (event) {
 });
 
 const updateLineNumbers = () => {
-  let textAreaLine = document.getElementById("text-input");
-  let lineNumbers = document.getElementById("line-numbers");
+  const textAreaLine = document.getElementById("text-input");
+  const lineNumbers = document.getElementById("line-numbers");
 
   // Split the text area content by line breaks
   let lines = textAreaLine.value.split("\n");
